@@ -3,38 +3,45 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Cinemachine;
+using UnityEngine.UI;
+using TMPro;
 
 public class Guido_Controller : MonoBehaviour
 {
     [SerializeField] private float guidoSpeed = 10f;
-    [SerializeField] private bool enableGame;
-    [SerializeField] private CinemachineVirtualCamera gameCam;
+    [SerializeField] private bool canMove;
+    [SerializeField] private Canvas mainCanvas;
+    [SerializeField] private TextMeshProUGUI text;
+
+    private bool nearWheel;
+    private bool isFocusingWheel;
     private Vector3 mousePos;
     private Vector3 desiredPosition;
     private Vector3 currentVelocity;
     private Transform guidoPos;
+    private GameObject SelectedWheel;
 
-    // Start is called before the first frame update
     void Start()
     {
         guidoPos = GetComponent<Transform>();
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
-
+        FollowMousePosition();
+        Debug.Log("Is focusing wheel ?" + " " + isFocusingWheel);
+        Debug.Log("The selected wheel is" + " " + SelectedWheel.name);
+        WheelFocus();
     }
 
 
     public void FollowMousePosition()
     {
-        if (enableGame)
+        if (canMove)
         {
             mousePos = Mouse.current.position.ReadValue();
             Ray ray = Camera.main.ScreenPointToRay(mousePos);
             RaycastHit hit;
-
             if (Physics.Raycast(ray, out hit))
             {
                 desiredPosition = new Vector3(hit.point.x, guidoPos.position.y, guidoPos.position.z);
@@ -43,4 +50,38 @@ public class Guido_Controller : MonoBehaviour
         }
     }
 
+        
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject.tag=="Wheel")
+        {
+            nearWheel = true;
+            text.enabled = true;
+            SelectedWheel = other.gameObject;
+        }
+    }
+
+    public void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "Wheel")
+        {
+            nearWheel = false;
+            text.enabled = false;
+        }
+    }
+
+    public void WheelFocus()
+    {
+        if(Mouse.current.press.ReadValue()>0 && nearWheel)
+        {
+            canMove = false;
+            isFocusingWheel = true;
+        }
+        else
+        {
+            canMove = true;
+            isFocusingWheel = false;
+        }
+    }
 }
