@@ -9,6 +9,9 @@ public class GameManager : MonoBehaviour
 {
     private Animator gameManagerAnim;
     private int stepIndex;
+
+    [HideInInspector] public int difficultyIndex;
+
     void Start()
     {
         gameManagerAnim = GetComponent<Animator>();

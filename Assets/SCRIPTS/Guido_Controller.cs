@@ -26,12 +26,11 @@ public class Guido_Controller : MonoBehaviour
         guidoPos = GetComponent<Transform>();
     }
 
-    void FixedUpdate()
+    void Update()
     {
         FollowMousePosition();
-        Debug.Log("Is focusing wheel ?" + " " + isFocusingWheel);
-        Debug.Log("The selected wheel is" + " " + SelectedWheel.name);
         WheelFocus();
+        PrintKey();
     }
 
 
@@ -82,6 +81,14 @@ public class Guido_Controller : MonoBehaviour
         {
             canMove = true;
             isFocusingWheel = false;
+        }
+    }
+
+    public void PrintKey()
+    {
+        if (Keyboard.current.eKey.wasPressedThisFrame)
+        {
+
         }
     }
 }
